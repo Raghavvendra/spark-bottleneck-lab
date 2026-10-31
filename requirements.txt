@@ -1,0 +1,8 @@
+# Versions this lab was developed and measured with.
+# pyspark 3.5.x needs pandas<3 and (for pandas UDFs) Java 17; Java 21 breaks Arrow in Spark 3.5.
+pyspark==3.5.3
+pandas==2.2.3
+numpy==1.26.4
+pyarrow==15.0.2
+matplotlib>=3.8
+pytest>=8

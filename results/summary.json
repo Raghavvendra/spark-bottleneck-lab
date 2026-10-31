@@ -1,0 +1,2826 @@
+{
+ "meta": {
+  "cores": 4,
+  "reps": 3,
+  "target_slots": 16,
+  "data": {
+   "rows": 6000000,
+   "scale": 1.0,
+   "compaction_s": 2.846052885055542,
+   "setup_s": 71.66127276420593
+  }
+ },
+ "scenarios": {
+  "skew_join": {
+   "what": "Sort-merge join on a skewed key (50% of rows share one key); the hot partition spills.",
+   "expected": [
+    "skew"
+   ],
+   "detected_on_bad": [
+    "broadcast_candidate",
+    "skew",
+    "spill"
+   ],
+   "diagnoser_hit": true,
+   "false_alarms_on_variants": {
+    "salting": [],
+    "aqe": []
+   },
+   "variants": {
+    "bad": {
+     "walls": [
+      6.598175797999829,
+      6.4019091620002655,
+      6.464265424000587
+     ],
+     "median_wall": 6.464265424000587,
+     "checksum": "d413c1726b67",
+     "diagnosis": {
+      "app_name": "skew_join:bad",
+      "observed_slots": 4,
+      "target_slots": 16,
+      "window_ms": 6383.0,
+      "covered_ms": 5762.0,
+      "gap_ms": 621.0,
+      "critical_path": [
+       6,
+       7,
+       8
+      ],
+      "stages": [
+       {
+        "stage_id": 3,
+        "name": "compute  [parquet@NativeMethodAccessorImpl.j]",
+        "n_tasks": 1,
+        "duration_ms": 36.0,
+        "share_of_window": 0.005639981200062667,
+        "on_critical_path": false,
+        "buckets_ms": {
+         "cpu": 4.16858,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 18.0,
+         "other_wait": 2.8314199999999996
+        },
+        "bucket_share": {
+         "cpu": 0.1667432,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 0.72,
+         "other_wait": 0.11325679999999999
+        },
+        "binding_resource": "Scheduling / per-task overhead bound",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 7,
+        "task_run_ms_max": 7
+       },
+       {
+        "stage_id": 4,
+        "name": "compute  [parquet@NativeMethodAccessorImpl.j]",
+        "n_tasks": 1,
+        "duration_ms": 34.0,
+        "share_of_window": 0.005326648911170296,
+        "on_critical_path": false,
+        "buckets_ms": {
+         "cpu": 3.456255,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 16.0,
+         "other_wait": 2.543745
+        },
+        "bucket_share": {
+         "cpu": 0.1571025,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 0.7272727272727273,
+         "other_wait": 0.11562477272727273
+        },
+        "binding_resource": "Scheduling / per-task overhead bound",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 6,
+        "task_run_ms_max": 6
+       },
+       {
+        "stage_id": 5,
+        "name": "scan > shuffle-write  [collect@scenarios.py:110]",
+        "n_tasks": 1,
+        "duration_ms": 391.0,
+        "share_of_window": 0.0612564624784584,
+        "on_critical_path": false,
+        "buckets_ms": {
+         "cpu": 285.389056,
+         "gc": 26.0,
+         "fetch_wait": 0.0,
+         "overhead": 12.0,
+         "other_wait": 60.61094400000002
+        },
+        "bucket_share": {
+         "cpu": 0.7432006666666666,
+         "gc": 0.06770833333333333,
+         "fetch_wait": 0.0,
+         "overhead": 0.03125,
+         "other_wait": 0.15784100000000004
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 86492,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 272310,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 372,
+        "task_run_ms_max": 372
+       },
+       {
+        "stage_id": 6,
+        "name": "scan > shuffle-write  [collect@scenarios.py:110]",
+        "n_tasks": 6,
+        "duration_ms": 1496.0,
+        "share_of_window": 0.23437255209149302,
+        "on_critical_path": true,
+        "buckets_ms": {
+         "cpu": 3619.142562,
+         "gc": 264.0,
+         "fetch_wait": 0.0,
+         "overhead": 75.0,
+         "other_wait": 672.857438
+        },
+        "bucket_share": {
+         "cpu": 0.7815034683653639,
+         "gc": 0.057007125890736345,
+         "fetch_wait": 0.0,
+         "overhead": 0.016195206218959188,
+         "other_wait": 0.14529419952494063
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 215379026,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 244183598,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 814.5,
+        "task_run_ms_max": 975
+       },
+       {
+        "stage_id": 7,
+        "name": "shuffle-read > sort > shuffle-write  [collect@scenarios.py:110]",
+        "n_tasks": 16,
+        "duration_ms": 4058.0,
+        "share_of_window": 0.6357512141626195,
+        "on_critical_path": true,
+        "buckets_ms": {
+         "cpu": 7272.291456000001,
+         "gc": 265.0,
+         "fetch_wait": 0.0,
+         "overhead": 267.0,
+         "other_wait": 896.708544
+        },
+        "bucket_share": {
+         "cpu": 0.8357995007470407,
+         "gc": 0.030456269394322492,
+         "fetch_wait": 0.0,
+         "overhead": 0.030686128031260775,
+         "other_wait": 0.10305810182737615
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 244455908,
+        "shuffle_write_bytes": 60083,
+        "spill_disk_bytes": 273352093,
+        "spill_mem_bytes": 823129760,
+        "task_run_ms_median": 290.0,
+        "task_run_ms_max": 2740
+       },
+       {
+        "stage_id": 8,
+        "name": "shuffle-read > sort  [collect@scenarios.py:110]",
+        "n_tasks": 16,
+        "duration_ms": 132.0,
+        "share_of_window": 0.020679931066896445,
+        "on_critical_path": true,
+        "buckets_ms": {
+         "cpu": 246.19146400000002,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 147.0,
+         "other_wait": 119.80853599999999
+        },
+        "bucket_share": {
+         "cpu": 0.47990538791423004,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 0.28654970760233917,
+         "other_wait": 0.23354490448343077
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 60083,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 12.0,
+        "task_run_ms_max": 55
+       }
+      ],
+      "dominant_stage": 7,
+      "verdict": "Stage 7 dominates the critical path (64% of wall-clock); binding resource: CPU-bound (JVM compute).",
+      "projected_ms": 4425.0,
+      "findings": [
+       {
+        "kind": "skew",
+        "severity": "high",
+        "stage_id": 7,
+        "title": "Data skew: one task dominates the stage",
+        "evidence": [
+         "Task 13 ran 2,740 ms vs stage median 290 ms (9.4x median, 32% of all task time in the stage).",
+         "Input bytes: max task 118.4 MiB vs median 7.7 MiB -> the imbalance is in the DATA, not the node.",
+         "MODEL ESTIMATE, UNVALIDATED (replays measured task durations; under-predicted real 4-core times by 38-60% in this repo's validation, so use for direction only) on 16 slots: stage takes 2,751 ms; perfectly balanced it would take 544 ms -> straggler tax 2,207 ms (80% of stage time)."
+        ],
+        "fix": "Find the hot key(s). Options in order of preference: (1) broadcast the small side so the hot key never shuffles; (2) enable AQE skew-join (spark.sql.adaptive.skewJoin.enabled) and tune skewedPartitionThresholdInBytes; (3) salt the hot key(s) on the big side and replicate the small side; (4) pre-aggregate before the join."
+       },
+       {
+        "kind": "spill",
+        "severity": "medium",
+        "stage_id": 7,
+        "title": "Spill: tasks did not fit their data in execution memory",
+        "evidence": [
+         "785.0 MiB spilled from memory (260.7 MiB on disk, compressed), in 16 of 16 tasks.",
+         "Spilled data is written, then read back and merged: extra disk I/O plus CPU."
+        ],
+        "fix": "Give each task less data (more partitions / fix skew), or more memory per task (fewer cores per executor, larger executor memory / spark.memory.fraction). Prefer the first: it is free."
+       },
+       {
+        "kind": "broadcast_candidate",
+        "severity": "medium",
+        "stage_id": 6,
+        "title": "Sort-merge join with a small side that was shuffled",
+        "evidence": [
+         "Join input shuffle sizes: stage 5 wrote 265.9 KiB, stage 6 wrote 232.9 MiB (897x larger).",
+         "Both sides were hash-partitioned and sorted across the network although one side would fit in a broadcast (< 128.0 MiB)."
+        ],
+        "fix": "Broadcast the small side (F.broadcast(df) or raise spark.sql.autoBroadcastJoinThreshold). This removes the shuffle of the big side entirely, and with it any join-key skew."
+       }
+      ]
+     }
+    },
+    "salting": {
+     "walls": [
+      7.065549647999433,
+      7.1093842099999165,
+      6.937382660999901
+     ],
+     "median_wall": 7.065549647999433,
+     "checksum": "d413c1726b67",
+     "diagnosis": {
+      "app_name": "skew_join:salting",
+      "observed_slots": 4,
+      "target_slots": 16,
+      "window_ms": 7010.0,
+      "covered_ms": 5205.0,
+      "gap_ms": 1805.0,
+      "critical_path": [
+       7,
+       9,
+       10
+      ],
+      "stages": [
+       {
+        "stage_id": 3,
+        "name": "compute  [parquet@NativeMethodAccessorImpl.j]",
+        "n_tasks": 1,
+        "duration_ms": 36.0,
+        "share_of_window": 0.005135520684736091,
+        "on_critical_path": false,
+        "buckets_ms": {
+         "cpu": 4.061777,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 19.0,
+         "other_wait": 2.938223
+        },
+        "bucket_share": {
+         "cpu": 0.15622219230769233,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 0.7307692307692307,
+         "other_wait": 0.11300857692307692
+        },
+        "binding_resource": "Scheduling / per-task overhead bound",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 7,
+        "task_run_ms_max": 7
+       },
+       {
+        "stage_id": 4,
+        "name": "compute  [parquet@NativeMethodAccessorImpl.j]",
+        "n_tasks": 1,
+        "duration_ms": 47.0,
+        "share_of_window": 0.006704707560627674,
+        "on_critical_path": false,
+        "buckets_ms": {
+         "cpu": 3.216445,
+         "gc": 4.0,
+         "fetch_wait": 0.0,
+         "overhead": 21.0,
+         "other_wait": 2.783555
+        },
+        "bucket_share": {
+         "cpu": 0.10375629032258066,
+         "gc": 0.12903225806451613,
+         "fetch_wait": 0.0,
+         "overhead": 0.6774193548387096,
+         "other_wait": 0.08979209677419354
+        },
+        "binding_resource": "Scheduling / per-task overhead bound",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 10,
+        "task_run_ms_max": 10
+       },
+       {
+        "stage_id": 5,
+        "name": "scan > hash-agg > shuffle-write  [collect@scenarios.py:124]",
+        "n_tasks": 6,
+        "duration_ms": 534.0,
+        "share_of_window": 0.07617689015691868,
+        "on_critical_path": false,
+        "buckets_ms": {
+         "cpu": 1065.564089,
+         "gc": 24.0,
+         "fetch_wait": 0.0,
+         "overhead": 98.0,
+         "other_wait": 768.435911
+        },
+        "bucket_share": {
+         "cpu": 0.5447669166666667,
+         "gc": 0.012269938650306749,
+         "fetch_wait": 0.0,
+         "overhead": 0.050102249488752554,
+         "other_wait": 0.39286089519427403
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 10513232,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 326897,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 432.5,
+        "task_run_ms_max": 434
+       },
+       {
+        "stage_id": 6,
+        "name": "shuffle-read > hash-agg  [collect@scenarios.py:124]",
+        "n_tasks": 16,
+        "duration_ms": 206.0,
+        "share_of_window": 0.029386590584878743,
+        "on_critical_path": false,
+        "buckets_ms": {
+         "cpu": 294.99400599999996,
+         "gc": 10.22671,
+         "fetch_wait": 0.0,
+         "overhead": 369.0,
+         "other_wait": 113.77928399999998
+        },
+        "bucket_share": {
+         "cpu": 0.3743578756345178,
+         "gc": 0.01297805837563452,
+         "fetch_wait": 0.0,
+         "overhead": 0.46827411167512695,
+         "other_wait": 0.1443899543147208
+        },
+        "binding_resource": "Scheduling / per-task overhead bound",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 326897,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 16.0,
+        "task_run_ms_max": 60
+       },
+       {
+        "stage_id": 7,
+        "name": "scan > shuffle-write  [collect@scenarios.py:110]",
+        "n_tasks": 6,
+        "duration_ms": 1441.0,
+        "share_of_window": 0.20556348074179742,
+        "on_critical_path": true,
+        "buckets_ms": {
+         "cpu": 3766.4715519999995,
+         "gc": 289.0,
+         "fetch_wait": 0.0,
+         "overhead": 55.0,
+         "other_wait": 522.5284479999999
+        },
+        "bucket_share": {
+         "cpu": 0.8129660159723722,
+         "gc": 0.062378588387653804,
+         "fetch_wait": 0.0,
+         "overhead": 0.011871357651629616,
+         "other_wait": 0.1127840379883445
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 215276090,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 258563152,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 851.5,
+        "task_run_ms_max": 877
+       },
+       {
+        "stage_id": 8,
+        "name": "scan > shuffle-write  [collect@scenarios.py:110]",
+        "n_tasks": 1,
+        "duration_ms": 1028.0,
+        "share_of_window": 0.14664764621968615,
+        "on_critical_path": false,
+        "buckets_ms": {
+         "cpu": 123.335237,
+         "gc": 9.0,
+         "fetch_wait": 0.0,
+         "overhead": 7.0,
+         "other_wait": 15.664762999999994
+        },
+        "bucket_share": {
+         "cpu": 0.795711206451613,
+         "gc": 0.05806451612903226,
+         "fetch_wait": 0.0,
+         "overhead": 0.04516129032258064,
+         "other_wait": 0.10106298709677415
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 86492,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 283903,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 148,
+        "task_run_ms_max": 148
+       },
+       {
+        "stage_id": 9,
+        "name": "shuffle-read > sort > shuffle-write  [collect@scenarios.py:110]",
+        "n_tasks": 16,
+        "duration_ms": 2803.0,
+        "share_of_window": 0.3998573466476462,
+        "on_critical_path": true,
+        "buckets_ms": {
+         "cpu": 9656.139284,
+         "gc": 273.0,
+         "fetch_wait": 0.0,
+         "overhead": 166.0,
+         "other_wait": 567.8607159999997
+        },
+        "bucket_share": {
+         "cpu": 0.9055743490574886,
+         "gc": 0.025602550876863923,
+         "fetch_wait": 0.0,
+         "overhead": 0.015567851448935572,
+         "other_wait": 0.053255248616711964
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 258847055,
+        "shuffle_write_bytes": 60160,
+        "spill_disk_bytes": 336220538,
+        "spill_mem_bytes": 817296624,
+        "task_run_ms_median": 560.0,
+        "task_run_ms_max": 1628
+       },
+       {
+        "stage_id": 10,
+        "name": "shuffle-read > sort  [collect@scenarios.py:110]",
+        "n_tasks": 16,
+        "duration_ms": 138.0,
+        "share_of_window": 0.019686162624821684,
+        "on_critical_path": true,
+        "buckets_ms": {
+         "cpu": 238.98848999999996,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 140.0,
+         "other_wait": 132.01151
+        },
+        "bucket_share": {
+         "cpu": 0.4676878473581213,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 0.27397260273972607,
+         "other_wait": 0.25833954990215263
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 60160,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 13.5,
+        "task_run_ms_max": 56
+       }
+      ],
+      "dominant_stage": 9,
+      "verdict": "Stage 9 dominates the critical path (40% of wall-clock); binding resource: CPU-bound (JVM compute).",
+      "projected_ms": 4407.0,
+      "findings": [
+       {
+        "kind": "spill",
+        "severity": "medium",
+        "stage_id": 9,
+        "title": "Spill: tasks did not fit their data in execution memory",
+        "evidence": [
+         "779.4 MiB spilled from memory (320.6 MiB on disk, compressed), in 16 of 16 tasks.",
+         "Spilled data is written, then read back and merged: extra disk I/O plus CPU."
+        ],
+        "fix": "Give each task less data (more partitions / fix skew), or more memory per task (fewer cores per executor, larger executor memory / spark.memory.fraction). Prefer the first: it is free."
+       },
+       {
+        "kind": "broadcast_candidate",
+        "severity": "medium",
+        "stage_id": 7,
+        "title": "Sort-merge join with a small side that was shuffled",
+        "evidence": [
+         "Join input shuffle sizes: stage 8 wrote 277.2 KiB, stage 7 wrote 246.6 MiB (911x larger).",
+         "Both sides were hash-partitioned and sorted across the network although one side would fit in a broadcast (< 128.0 MiB)."
+        ],
+        "fix": "Broadcast the small side (F.broadcast(df) or raise spark.sql.autoBroadcastJoinThreshold). This removes the shuffle of the big side entirely, and with it any join-key skew."
+       }
+      ]
+     }
+    },
+    "aqe": {
+     "walls": [
+      4.783938695999495,
+      5.313330175000374,
+      4.871356175000074
+     ],
+     "median_wall": 4.871356175000074,
+     "checksum": "d413c1726b67",
+     "diagnosis": {
+      "app_name": "skew_join:aqe",
+      "observed_slots": 4,
+      "target_slots": 16,
+      "window_ms": 4801.0,
+      "covered_ms": 4200.0,
+      "gap_ms": 601.0,
+      "critical_path": [
+       10
+      ],
+      "stages": [
+       {
+        "stage_id": 4,
+        "name": "compute  [parquet@NativeMethodAccessorImpl.j]",
+        "n_tasks": 1,
+        "duration_ms": 37.0,
+        "share_of_window": 0.007706727765048948,
+        "on_critical_path": false,
+        "buckets_ms": {
+         "cpu": 3.783829,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 20.0,
+         "other_wait": 2.216171
+        },
+        "bucket_share": {
+         "cpu": 0.1455318846153846,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 0.7692307692307693,
+         "other_wait": 0.08523734615384616
+        },
+        "binding_resource": "Scheduling / per-task overhead bound",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 6,
+        "task_run_ms_max": 6
+       },
+       {
+        "stage_id": 5,
+        "name": "compute  [parquet@NativeMethodAccessorImpl.j]",
+        "n_tasks": 1,
+        "duration_ms": 30.0,
+        "share_of_window": 0.006248698187877526,
+        "on_critical_path": false,
+        "buckets_ms": {
+         "cpu": 2.693384,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 15.0,
+         "other_wait": 2.306616
+        },
+        "bucket_share": {
+         "cpu": 0.1346692,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 0.75,
+         "other_wait": 0.1153308
+        },
+        "binding_resource": "Scheduling / per-task overhead bound",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 5,
+        "task_run_ms_max": 5
+       },
+       {
+        "stage_id": 6,
+        "name": "scan > shuffle-write  [collect@scenarios.py:110]",
+        "n_tasks": 6,
+        "duration_ms": 1592.0,
+        "share_of_window": 0.3315975838367007,
+        "on_critical_path": false,
+        "buckets_ms": {
+         "cpu": 3883.984656,
+         "gc": 225.0,
+         "fetch_wait": 0.0,
+         "overhead": 91.0,
+         "other_wait": 964.015344
+        },
+        "bucket_share": {
+         "cpu": 0.752127160340821,
+         "gc": 0.0435708752904725,
+         "fetch_wait": 0.0,
+         "overhead": 0.017621998450813324,
+         "other_wait": 0.1866799659178931
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 215379026,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 244183598,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 992.0,
+        "task_run_ms_max": 1006
+       },
+       {
+        "stage_id": 7,
+        "name": "scan > shuffle-write  [collect@scenarios.py:110]",
+        "n_tasks": 1,
+        "duration_ms": 1125.0,
+        "share_of_window": 0.2343261820454072,
+        "on_critical_path": false,
+        "buckets_ms": {
+         "cpu": 101.775947,
+         "gc": 6.0,
+         "fetch_wait": 0.0,
+         "overhead": 9.0,
+         "other_wait": 21.224052999999998
+        },
+        "bucket_share": {
+         "cpu": 0.7375068623188406,
+         "gc": 0.043478260869565216,
+         "fetch_wait": 0.0,
+         "overhead": 0.06521739130434782,
+         "other_wait": 0.15379748550724637
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 86492,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 272310,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 129,
+        "task_run_ms_max": 129
+       },
+       {
+        "stage_id": 10,
+        "name": "shuffle-read > sort > shuffle-write  [collect@scenarios.py:110]",
+        "n_tasks": 21,
+        "duration_ms": 2375.0,
+        "share_of_window": 0.4946886065403041,
+        "on_critical_path": true,
+        "buckets_ms": {
+         "cpu": 7557.2745749999995,
+         "gc": 261.752113,
+         "fetch_wait": 0.0,
+         "overhead": 343.0,
+         "other_wait": 808.9733119999999
+        },
+        "bucket_share": {
+         "cpu": 0.8424116124177906,
+         "gc": 0.029177584773157954,
+         "fetch_wait": 0.0,
+         "overhead": 0.038234310556236765,
+         "other_wait": 0.09017649225281461
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 244544358,
+        "shuffle_write_bytes": 78443,
+        "spill_disk_bytes": 238816568,
+        "spill_mem_bytes": 740554624,
+        "task_run_ms_median": 332,
+        "task_run_ms_max": 750
+       },
+       {
+        "stage_id": 14,
+        "name": "shuffle-read > sort  [collect@scenarios.py:110]",
+        "n_tasks": 16,
+        "duration_ms": 166.0,
+        "share_of_window": 0.03457612997292231,
+        "on_critical_path": false,
+        "buckets_ms": {
+         "cpu": 280.54826099999997,
+         "gc": 28.0,
+         "fetch_wait": 0.0,
+         "overhead": 193.0,
+         "other_wait": 150.45173900000003
+        },
+        "bucket_share": {
+         "cpu": 0.43028874386503063,
+         "gc": 0.04294478527607362,
+         "fetch_wait": 0.0,
+         "overhead": 0.2960122699386503,
+         "other_wait": 0.23075420092024546
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 78443,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 22.0,
+        "task_run_ms_max": 58
+       }
+      ],
+      "dominant_stage": 10,
+      "verdict": "Stage 10 dominates the critical path (49% of wall-clock); binding resource: CPU-bound (JVM compute).",
+      "projected_ms": 1371.0,
+      "findings": [
+       {
+        "kind": "spill",
+        "severity": "medium",
+        "stage_id": 10,
+        "title": "Spill: tasks did not fit their data in execution memory",
+        "evidence": [
+         "706.2 MiB spilled from memory (227.8 MiB on disk, compressed), in 20 of 21 tasks.",
+         "Spilled data is written, then read back and merged: extra disk I/O plus CPU."
+        ],
+        "fix": "Give each task less data (more partitions / fix skew), or more memory per task (fewer cores per executor, larger executor memory / spark.memory.fraction). Prefer the first: it is free."
+       },
+       {
+        "kind": "broadcast_candidate",
+        "severity": "medium",
+        "stage_id": 6,
+        "title": "Sort-merge join with a small side that was shuffled",
+        "evidence": [
+         "Join input shuffle sizes: stage 7 wrote 265.9 KiB, stage 6 wrote 232.9 MiB (897x larger).",
+         "Both sides were hash-partitioned and sorted across the network although one side would fit in a broadcast (< 128.0 MiB)."
+        ],
+        "fix": "Broadcast the small side (F.broadcast(df) or raise spark.sql.autoBroadcastJoinThreshold). This removes the shuffle of the big side entirely, and with it any join-key skew."
+       }
+      ]
+     }
+    }
+   },
+   "comparisons": {
+    "salting": {
+     "variant": "salting",
+     "wall_before_s": 6.464265424000587,
+     "wall_after_s": 7.065549647999433,
+     "speedup_measured": 0.914899158033785,
+     "projected_before_s": 4.425,
+     "projected_after_s": 4.407,
+     "speedup_projected": 1.0040844111640572,
+     "result_identical": true,
+     "binding_before": "CPU-bound (JVM compute)",
+     "binding_after": "CPU-bound (JVM compute)",
+     "resolved": [
+      "skew"
+     ],
+     "remaining": [
+      "broadcast_candidate",
+      "spill"
+     ],
+     "introduced": [],
+     "verdict": "REGRESSION: 1.09x SLOWER measured. The fix costs more than the problem at this scale."
+    },
+    "aqe": {
+     "variant": "aqe",
+     "wall_before_s": 6.464265424000587,
+     "wall_after_s": 4.871356175000074,
+     "speedup_measured": 1.326995028032515,
+     "projected_before_s": 4.425,
+     "projected_after_s": 1.371,
+     "speedup_projected": 3.227571115973742,
+     "result_identical": true,
+     "binding_before": "CPU-bound (JVM compute)",
+     "binding_after": "CPU-bound (JVM compute)",
+     "resolved": [
+      "skew"
+     ],
+     "remaining": [
+      "broadcast_candidate",
+      "spill"
+     ],
+     "introduced": [],
+     "verdict": "CONFIRMED: 1.33x faster measured, result identical; the same resource still binds, with less work."
+    }
+   }
+  },
+  "small_files": {
+   "what": "Scan 1,500 tiny parquet files vs. the same rows compacted to 6 files.",
+   "expected": [
+    "small_files"
+   ],
+   "detected_on_bad": [
+    "small_files"
+   ],
+   "diagnoser_hit": true,
+   "false_alarms_on_variants": {
+    "compacted": []
+   },
+   "variants": {
+    "bad": {
+     "walls": [
+      3.5711230410006465,
+      3.0358257530006085,
+      3.055464521000431
+     ],
+     "median_wall": 3.055464521000431,
+     "checksum": "f18e8be67dcd",
+     "diagnosis": {
+      "app_name": "small_files:bad",
+      "observed_slots": 4,
+      "target_slots": 16,
+      "window_ms": 2793.0,
+      "covered_ms": 2336.0,
+      "gap_ms": 457.0,
+      "critical_path": [
+       4,
+       5
+      ],
+      "stages": [
+       {
+        "stage_id": 3,
+        "name": "compute  [parquet@NativeMethodAccessorImpl.j]",
+        "n_tasks": 1,
+        "duration_ms": 40.0,
+        "share_of_window": 0.014321518080916577,
+        "on_critical_path": false,
+        "buckets_ms": {
+         "cpu": 4.202624,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 21.0,
+         "other_wait": 2.797376
+        },
+        "bucket_share": {
+         "cpu": 0.1500937142857143,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 0.75,
+         "other_wait": 0.09990628571428571
+        },
+        "binding_resource": "Scheduling / per-task overhead bound",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 7,
+        "task_run_ms_max": 7
+       },
+       {
+        "stage_id": 4,
+        "name": "scan > hash-agg > shuffle-write  [collect@scenarios.py:110]",
+        "n_tasks": 47,
+        "duration_ms": 2197.0,
+        "share_of_window": 0.786609380594343,
+        "on_critical_path": true,
+        "buckets_ms": {
+         "cpu": 6158.876239,
+         "gc": 241.0,
+         "fetch_wait": 0.0,
+         "overhead": 565.0,
+         "other_wait": 1752.123761
+        },
+        "bucket_share": {
+         "cpu": 0.7065362210622921,
+         "gc": 0.02764712630492142,
+         "fetch_wait": 0.0,
+         "overhead": 0.0648158770219112,
+         "other_wait": 0.20100077561087532
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 33243968,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 682269,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 107,
+        "task_run_ms_max": 668
+       },
+       {
+        "stage_id": 5,
+        "name": "shuffle-read > hash-agg  [collect@scenarios.py:110]",
+        "n_tasks": 8,
+        "duration_ms": 99.0,
+        "share_of_window": 0.03544575725026853,
+        "on_critical_path": true,
+        "buckets_ms": {
+         "cpu": 181.78309599999997,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 84.0,
+         "other_wait": 94.21690400000001
+        },
+        "bucket_share": {
+         "cpu": 0.5049530444444443,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 0.23333333333333334,
+         "other_wait": 0.2617136222222223
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 682269,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 34.0,
+        "task_run_ms_max": 53
+       }
+      ],
+      "dominant_stage": 4,
+      "verdict": "Stage 4 dominates the critical path (79% of wall-clock); binding resource: CPU-bound (JVM compute).",
+      "projected_ms": 1214.0,
+      "findings": [
+       {
+        "kind": "small_files",
+        "severity": "high",
+        "stage_id": null,
+        "title": "Small-files problem: per-file list/open/footer cost dominates",
+        "evidence": [
+         "Scan read 1,500 files totalling 32.9 MiB -> average file size 22.5 KiB (healthy is 128 MiB to 1 GiB).",
+         "6 ms spent listing files / reading metadata on the driver."
+        ],
+        "fix": "Compact into 128 MiB - 1 GiB files (OPTIMIZE on Delta, or a scheduled rewrite job). Fix it at WRITE time (coalesce/repartition before write, or use auto-compaction). Compaction has a one-off cost: it pays back only if the data is read often enough."
+       }
+      ]
+     }
+    },
+    "compacted": {
+     "walls": [
+      1.1994733660003476,
+      1.1343145350001578,
+      1.141111307000756
+     ],
+     "median_wall": 1.141111307000756,
+     "checksum": "f18e8be67dcd",
+     "diagnosis": {
+      "app_name": "small_files:compacted",
+      "observed_slots": 4,
+      "target_slots": 16,
+      "window_ms": 1061.0,
+      "covered_ms": 646.0,
+      "gap_ms": 415.0,
+      "critical_path": [
+       4,
+       5
+      ],
+      "stages": [
+       {
+        "stage_id": 3,
+        "name": "compute  [parquet@NativeMethodAccessorImpl.j]",
+        "n_tasks": 1,
+        "duration_ms": 34.0,
+        "share_of_window": 0.03204524033930255,
+        "on_critical_path": false,
+        "buckets_ms": {
+         "cpu": 3.457638,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 17.0,
+         "other_wait": 3.542362
+        },
+        "bucket_share": {
+         "cpu": 0.14406825,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 0.7083333333333334,
+         "other_wait": 0.14759841666666665
+        },
+        "binding_resource": "Scheduling / per-task overhead bound",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 7,
+        "task_run_ms_max": 7
+       },
+       {
+        "stage_id": 4,
+        "name": "scan > hash-agg > shuffle-write  [collect@scenarios.py:110]",
+        "n_tasks": 3,
+        "duration_ms": 517.0,
+        "share_of_window": 0.4872761545711593,
+        "on_critical_path": true,
+        "buckets_ms": {
+         "cpu": 840.099352,
+         "gc": 66.0,
+         "fetch_wait": 0.0,
+         "overhead": 40.0,
+         "other_wait": 567.900648
+        },
+        "bucket_share": {
+         "cpu": 0.5548872866578599,
+         "gc": 0.043593130779392336,
+         "fetch_wait": 0.0,
+         "overhead": 0.026420079260237782,
+         "other_wait": 0.37509950330250996
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 8152318,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 43954,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 491,
+        "task_run_ms_max": 492
+       },
+       {
+        "stage_id": 5,
+        "name": "shuffle-read > hash-agg  [collect@scenarios.py:110]",
+        "n_tasks": 8,
+        "duration_ms": 95.0,
+        "share_of_window": 0.08953817153628653,
+        "on_critical_path": true,
+        "buckets_ms": {
+         "cpu": 131.494179,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 122.0,
+         "other_wait": 86.50582099999998
+        },
+        "bucket_share": {
+         "cpu": 0.3867475852941177,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 0.3588235294117647,
+         "other_wait": 0.2544288852941176
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 43954,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 27.0,
+        "task_run_ms_max": 42
+       }
+      ],
+      "dominant_stage": 4,
+      "verdict": "Stage 4 dominates the critical path (49% of wall-clock); binding resource: CPU-bound (JVM compute).",
+      "projected_ms": 981.0,
+      "findings": []
+     }
+    }
+   },
+   "comparisons": {
+    "compacted": {
+     "variant": "compacted",
+     "wall_before_s": 3.055464521000431,
+     "wall_after_s": 1.141111307000756,
+     "speedup_measured": 2.6776218080173724,
+     "projected_before_s": 1.214,
+     "projected_after_s": 0.981,
+     "speedup_projected": 1.2375127420998981,
+     "result_identical": true,
+     "binding_before": "CPU-bound (JVM compute)",
+     "binding_after": "CPU-bound (JVM compute)",
+     "resolved": [
+      "small_files"
+     ],
+     "remaining": [],
+     "introduced": [],
+     "verdict": "CONFIRMED: 2.68x faster measured, result identical; the same resource still binds, with less work."
+    }
+   }
+  },
+  "over_partitioned": {
+   "what": "groupBy with spark.sql.shuffle.partitions=3000 on a ~1 GB-class input.",
+   "expected": [
+    "tiny_tasks"
+   ],
+   "detected_on_bad": [
+    "tiny_tasks"
+   ],
+   "diagnoser_hit": true,
+   "false_alarms_on_variants": {
+    "tuned": [],
+    "aqe": []
+   },
+   "variants": {
+    "bad": {
+     "walls": [
+      7.021188512999288,
+      7.115994465999393,
+      6.754117479000342
+     ],
+     "median_wall": 7.021188512999288,
+     "checksum": "a80f874c3469",
+     "diagnosis": {
+      "app_name": "over_partitioned:bad",
+      "observed_slots": 4,
+      "target_slots": 16,
+      "window_ms": 6919.0,
+      "covered_ms": 6506.0,
+      "gap_ms": 413.0,
+      "critical_path": [
+       4,
+       5
+      ],
+      "stages": [
+       {
+        "stage_id": 3,
+        "name": "compute  [parquet@NativeMethodAccessorImpl.j]",
+        "n_tasks": 1,
+        "duration_ms": 36.0,
+        "share_of_window": 0.005203064026593439,
+        "on_critical_path": false,
+        "buckets_ms": {
+         "cpu": 3.650254,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 19.0,
+         "other_wait": 2.349746
+        },
+        "bucket_share": {
+         "cpu": 0.14601016,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 0.76,
+         "other_wait": 0.09398984
+        },
+        "binding_resource": "Scheduling / per-task overhead bound",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 6,
+        "task_run_ms_max": 6
+       },
+       {
+        "stage_id": 4,
+        "name": "scan > hash-agg > shuffle-write  [collect@scenarios.py:110]",
+        "n_tasks": 6,
+        "duration_ms": 742.0,
+        "share_of_window": 0.10724093077034254,
+        "on_critical_path": true,
+        "buckets_ms": {
+         "cpu": 1597.350229,
+         "gc": 104.0,
+         "fetch_wait": 0.0,
+         "overhead": 111.0,
+         "other_wait": 907.6497710000001
+        },
+        "bucket_share": {
+         "cpu": 0.5872611136029411,
+         "gc": 0.03823529411764706,
+         "fetch_wait": 0.0,
+         "overhead": 0.040808823529411765,
+         "other_wait": 0.33369476875000004
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 15518544,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 374520,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 606.0,
+        "task_run_ms_max": 606
+       },
+       {
+        "stage_id": 5,
+        "name": "shuffle-read > hash-agg  [collect@scenarios.py:110]",
+        "n_tasks": 3000,
+        "duration_ms": 5728.0,
+        "share_of_window": 0.8278652984535337,
+        "on_critical_path": true,
+        "buckets_ms": {
+         "cpu": 6537.020473999999,
+         "gc": 686.748654,
+         "fetch_wait": 0.0,
+         "overhead": 17656.0,
+         "other_wait": 288.23087200000003
+        },
+        "bucket_share": {
+         "cpu": 0.2597353970915448,
+         "gc": 0.02728658034011443,
+         "fetch_wait": 0.0,
+         "overhead": 0.7015257469802925,
+         "other_wait": 0.011452275588048316
+        },
+        "binding_resource": "Scheduling / per-task overhead bound",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 374520,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 2.0,
+        "task_run_ms_max": 41
+       }
+      ],
+      "dominant_stage": 5,
+      "verdict": "Stage 5 dominates the critical path (83% of wall-clock); binding resource: Scheduling / per-task overhead bound.",
+      "projected_ms": 2621.0,
+      "findings": [
+       {
+        "kind": "tiny_tasks",
+        "severity": "high",
+        "stage_id": 5,
+        "title": "Too many tiny tasks: fixed per-task cost dominates",
+        "evidence": [
+         "3000 tasks, median duration 6 ms, ~125 B of data per task.",
+         "Per-task overhead (deserialise + scheduler delay + result serialisation) is 70% of all task time in this stage."
+        ],
+        "fix": "Reduce partition count to roughly 32 (target 100-200 MiB per task, at least 2-3x the slot count). Set spark.sql.shuffle.partitions lower, or enable AQE partition coalescing (spark.sql.adaptive.coalescePartitions.enabled)."
+       }
+      ]
+     }
+    },
+    "tuned": {
+     "walls": [
+      1.2404186009998739,
+      1.1598674920005578,
+      1.1852932439996948
+     ],
+     "median_wall": 1.1852932439996948,
+     "checksum": "a80f874c3469",
+     "diagnosis": {
+      "app_name": "over_partitioned:tuned",
+      "observed_slots": 4,
+      "target_slots": 16,
+      "window_ms": 1101.0,
+      "covered_ms": 733.0,
+      "gap_ms": 368.0,
+      "critical_path": [
+       4,
+       5
+      ],
+      "stages": [
+       {
+        "stage_id": 3,
+        "name": "compute  [parquet@NativeMethodAccessorImpl.j]",
+        "n_tasks": 1,
+        "duration_ms": 42.0,
+        "share_of_window": 0.03814713896457766,
+        "on_critical_path": false,
+        "buckets_ms": {
+         "cpu": 3.666075,
+         "gc": 3.333925,
+         "fetch_wait": 0.0,
+         "overhead": 24.0,
+         "other_wait": 0.0
+        },
+        "bucket_share": {
+         "cpu": 0.11826048387096774,
+         "gc": 0.10754596774193548,
+         "fetch_wait": 0.0,
+         "overhead": 0.7741935483870968,
+         "other_wait": 0.0
+        },
+        "binding_resource": "Scheduling / per-task overhead bound",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 7,
+        "task_run_ms_max": 7
+       },
+       {
+        "stage_id": 4,
+        "name": "scan > hash-agg > shuffle-write  [collect@scenarios.py:110]",
+        "n_tasks": 6,
+        "duration_ms": 592.0,
+        "share_of_window": 0.5376930063578564,
+        "on_critical_path": true,
+        "buckets_ms": {
+         "cpu": 1129.501088,
+         "gc": 96.0,
+         "fetch_wait": 0.0,
+         "overhead": 123.0,
+         "other_wait": 796.498912
+        },
+        "bucket_share": {
+         "cpu": 0.5265739337995338,
+         "gc": 0.044755244755244755,
+         "fetch_wait": 0.0,
+         "overhead": 0.057342657342657345,
+         "other_wait": 0.3713281641025641
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 15518544,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 80504,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 463.5,
+        "task_run_ms_max": 468
+       },
+       {
+        "stage_id": 5,
+        "name": "shuffle-read > hash-agg  [collect@scenarios.py:110]",
+        "n_tasks": 8,
+        "duration_ms": 99.0,
+        "share_of_window": 0.08991825613079019,
+        "on_critical_path": true,
+        "buckets_ms": {
+         "cpu": 138.47917999999999,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 101.0,
+         "other_wait": 89.52082
+        },
+        "bucket_share": {
+         "cpu": 0.4209093617021276,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 0.3069908814589666,
+         "other_wait": 0.2720997568389058
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 80504,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 29.5,
+        "task_run_ms_max": 41
+       }
+      ],
+      "dominant_stage": 4,
+      "verdict": "Stage 4 dominates the critical path (54% of wall-clock); binding resource: CPU-bound (JVM compute).",
+      "projected_ms": 911.0,
+      "findings": []
+     }
+    },
+    "aqe": {
+     "walls": [
+      1.3547078779993171,
+      1.4113257300004989,
+      1.3260074680001708
+     ],
+     "median_wall": 1.3547078779993171,
+     "checksum": "a80f874c3469",
+     "diagnosis": {
+      "app_name": "over_partitioned:aqe",
+      "observed_slots": 4,
+      "target_slots": 16,
+      "window_ms": 1277.0,
+      "covered_ms": 875.0,
+      "gap_ms": 402.0,
+      "critical_path": [
+       5
+      ],
+      "stages": [
+       {
+        "stage_id": 4,
+        "name": "compute  [parquet@NativeMethodAccessorImpl.j]",
+        "n_tasks": 1,
+        "duration_ms": 38.0,
+        "share_of_window": 0.02975724353954581,
+        "on_critical_path": false,
+        "buckets_ms": {
+         "cpu": 3.383429,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 19.0,
+         "other_wait": 2.616571
+        },
+        "bucket_share": {
+         "cpu": 0.13533716,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 0.76,
+         "other_wait": 0.10466284
+        },
+        "binding_resource": "Scheduling / per-task overhead bound",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 6,
+        "task_run_ms_max": 6
+       },
+       {
+        "stage_id": 5,
+        "name": "scan > hash-agg > shuffle-write  [collect@scenarios.py:110]",
+        "n_tasks": 6,
+        "duration_ms": 733.0,
+        "share_of_window": 0.5740015661707126,
+        "on_critical_path": true,
+        "buckets_ms": {
+         "cpu": 1458.209326,
+         "gc": 104.0,
+         "fetch_wait": 0.0,
+         "overhead": 109.0,
+         "other_wait": 943.790674
+        },
+        "bucket_share": {
+         "cpu": 0.5576326294455066,
+         "gc": 0.03977055449330784,
+         "fetch_wait": 0.0,
+         "overhead": 0.04168260038240918,
+         "other_wait": 0.3609142156787763
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 15518544,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 374520,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 567.5,
+        "task_run_ms_max": 569
+       },
+       {
+        "stage_id": 7,
+        "name": "shuffle-read > hash-agg  [collect@scenarios.py:110]",
+        "n_tasks": 1,
+        "duration_ms": 104.0,
+        "share_of_window": 0.08144087705559906,
+        "on_critical_path": false,
+        "buckets_ms": {
+         "cpu": 76.875178,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 15.0,
+         "other_wait": 2.1248219999999947
+        },
+        "bucket_share": {
+         "cpu": 0.8178210425531915,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 0.1595744680851064,
+         "other_wait": 0.02260448936170207
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 374520,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 79,
+        "task_run_ms_max": 79
+       }
+      ],
+      "dominant_stage": 5,
+      "verdict": "Stage 5 dominates the critical path (57% of wall-clock); binding resource: CPU-bound (JVM compute).",
+      "projected_ms": 992.0,
+      "findings": []
+     }
+    }
+   },
+   "comparisons": {
+    "tuned": {
+     "variant": "tuned",
+     "wall_before_s": 7.021188512999288,
+     "wall_after_s": 1.1852932439996948,
+     "speedup_measured": 5.923587726955015,
+     "projected_before_s": 2.621,
+     "projected_after_s": 0.911,
+     "speedup_projected": 2.877058177826564,
+     "result_identical": true,
+     "binding_before": "Scheduling / per-task overhead bound",
+     "binding_after": "CPU-bound (JVM compute)",
+     "resolved": [
+      "tiny_tasks"
+     ],
+     "remaining": [],
+     "introduced": [],
+     "verdict": "CONFIRMED: 5.92x faster measured, result identical; the binding resource changed."
+    },
+    "aqe": {
+     "variant": "aqe",
+     "wall_before_s": 7.021188512999288,
+     "wall_after_s": 1.3547078779993171,
+     "speedup_measured": 5.182806291322701,
+     "projected_before_s": 2.621,
+     "projected_after_s": 0.992,
+     "speedup_projected": 2.6421370967741935,
+     "result_identical": true,
+     "binding_before": "Scheduling / per-task overhead bound",
+     "binding_after": "CPU-bound (JVM compute)",
+     "resolved": [
+      "tiny_tasks"
+     ],
+     "remaining": [],
+     "introduced": [],
+     "verdict": "CONFIRMED: 5.18x faster measured, result identical; the binding resource changed."
+    }
+   }
+  },
+  "python_udf": {
+   "what": "Row-at-a-time Python UDF vs. pandas UDF vs. built-in expressions.",
+   "expected": [
+    "python_udf"
+   ],
+   "detected_on_bad": [
+    "python_udf"
+   ],
+   "diagnoser_hit": true,
+   "false_alarms_on_variants": {
+    "pandas_udf": [
+     "python_udf"
+    ],
+    "native": []
+   },
+   "variants": {
+    "bad": {
+     "walls": [
+      2.2677968279995184,
+      2.259012413000164,
+      2.2013519140000426
+     ],
+     "median_wall": 2.259012413000164,
+     "checksum": "7f9c5fb77a84",
+     "diagnosis": {
+      "app_name": "python_udf:bad",
+      "observed_slots": 4,
+      "target_slots": 16,
+      "window_ms": 2201.0,
+      "covered_ms": 1675.0,
+      "gap_ms": 526.0,
+      "critical_path": [
+       4,
+       5
+      ],
+      "stages": [
+       {
+        "stage_id": 3,
+        "name": "compute  [parquet@NativeMethodAccessorImpl.j]",
+        "n_tasks": 1,
+        "duration_ms": 41.0,
+        "share_of_window": 0.0186278964107224,
+        "on_critical_path": false,
+        "buckets_ms": {
+         "cpu": 4.231741,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 22.0,
+         "other_wait": 3.7682589999999996
+        },
+        "bucket_share": {
+         "cpu": 0.14105803333333336,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 0.7333333333333333,
+         "other_wait": 0.12560863333333333
+        },
+        "binding_resource": "Scheduling / per-task overhead bound",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 8,
+        "task_run_ms_max": 8
+       },
+       {
+        "stage_id": 4,
+        "name": "scan > hash-agg > shuffle-write  [collect@scenarios.py:110]",
+        "n_tasks": 6,
+        "duration_ms": 1562.0,
+        "share_of_window": 0.7096774193548387,
+        "on_critical_path": true,
+        "buckets_ms": {
+         "cpu": 1068.6536190000002,
+         "gc": 132.0,
+         "fetch_wait": 0.0,
+         "overhead": 127.0,
+         "other_wait": 4247.346381
+        },
+        "bucket_share": {
+         "cpu": 0.1916867478026906,
+         "gc": 0.02367713004484305,
+         "fetch_wait": 0.0,
+         "overhead": 0.022780269058295964,
+         "other_wait": 0.7618558530941705
+        },
+        "binding_resource": "Waiting on Python workers (UDF serialisation + interpreter)",
+        "input_bytes": 39026604,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 1098,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 1176.5,
+        "task_run_ms_max": 1231
+       },
+       {
+        "stage_id": 5,
+        "name": "shuffle-read > hash-agg  [collect@scenarios.py:110]",
+        "n_tasks": 8,
+        "duration_ms": 72.0,
+        "share_of_window": 0.03271240345297592,
+        "on_critical_path": true,
+        "buckets_ms": {
+         "cpu": 83.362128,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 98.0,
+         "other_wait": 65.637872
+        },
+        "bucket_share": {
+         "cpu": 0.3374984939271255,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 0.3967611336032389,
+         "other_wait": 0.2657403724696356
+        },
+        "binding_resource": "Scheduling / per-task overhead bound",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 1098,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 18.5,
+        "task_run_ms_max": 30
+       }
+      ],
+      "dominant_stage": 4,
+      "verdict": "Stage 4 dominates the critical path (71% of wall-clock); binding resource: Waiting on Python workers (UDF serialisation + interpreter).",
+      "projected_ms": 1828.0,
+      "findings": [
+       {
+        "kind": "python_udf",
+        "severity": "high",
+        "stage_id": null,
+        "title": "Python UDF in the physical plan: rows cross the JVM/Python boundary",
+        "evidence": [
+         "Plan operator: +- BatchEvalPython (5)",
+         "Every row is serialised to a Python worker and back; the JVM thread shows up as 'other waiting', not CPU. The optimizer also cannot push filters or prune columns through the UDF."
+        ],
+        "fix": "Replace with built-in Spark SQL functions (F.when, F.regexp_*, F.expr). If logic truly needs Python, use a pandas UDF (Arrow, vectorised) instead of a row-at-a-time UDF."
+       }
+      ]
+     }
+    },
+    "pandas_udf": {
+     "walls": [
+      2.9035326140001416,
+      2.5952882640003736,
+      2.820329197999854
+     ],
+     "median_wall": 2.820329197999854,
+     "checksum": "7f9c5fb77a84",
+     "diagnosis": {
+      "app_name": "python_udf:pandas_udf",
+      "observed_slots": 4,
+      "target_slots": 16,
+      "window_ms": 2752.0,
+      "covered_ms": 1956.0,
+      "gap_ms": 796.0,
+      "critical_path": [
+       4,
+       5
+      ],
+      "stages": [
+       {
+        "stage_id": 3,
+        "name": "compute  [parquet@NativeMethodAccessorImpl.j]",
+        "n_tasks": 1,
+        "duration_ms": 42.0,
+        "share_of_window": 0.015261627906976744,
+        "on_critical_path": false,
+        "buckets_ms": {
+         "cpu": 4.385432,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 24.0,
+         "other_wait": 3.6145680000000002
+        },
+        "bucket_share": {
+         "cpu": 0.13704475,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 0.75,
+         "other_wait": 0.11295525000000001
+        },
+        "binding_resource": "Scheduling / per-task overhead bound",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 8,
+        "task_run_ms_max": 8
+       },
+       {
+        "stage_id": 4,
+        "name": "scan > hash-agg > shuffle-write  [collect@scenarios.py:110]",
+        "n_tasks": 6,
+        "duration_ms": 1818.0,
+        "share_of_window": 0.6606104651162791,
+        "on_critical_path": true,
+        "buckets_ms": {
+         "cpu": 1044.362461,
+         "gc": 123.0,
+         "fetch_wait": 0.0,
+         "overhead": 121.0,
+         "other_wait": 5480.637538999999
+        },
+        "bucket_share": {
+         "cpu": 0.15428607785492687,
+         "gc": 0.01817107401388684,
+         "fetch_wait": 0.0,
+         "overhead": 0.017875609395774858,
+         "other_wait": 0.8096672387354115
+        },
+        "binding_resource": "Waiting on Python workers (UDF serialisation + interpreter)",
+        "input_bytes": 39026604,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 1098,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 1558.5,
+        "task_run_ms_max": 1560
+       },
+       {
+        "stage_id": 5,
+        "name": "shuffle-read > hash-agg  [collect@scenarios.py:110]",
+        "n_tasks": 8,
+        "duration_ms": 96.0,
+        "share_of_window": 0.03488372093023256,
+        "on_critical_path": true,
+        "buckets_ms": {
+         "cpu": 104.491199,
+         "gc": 8.0,
+         "fetch_wait": 0.0,
+         "overhead": 148.0,
+         "other_wait": 73.508801
+        },
+        "bucket_share": {
+         "cpu": 0.31284790119760475,
+         "gc": 0.023952095808383235,
+         "fetch_wait": 0.0,
+         "overhead": 0.4431137724550898,
+         "other_wait": 0.22008623053892218
+        },
+        "binding_resource": "Scheduling / per-task overhead bound",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 1098,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 23.0,
+        "task_run_ms_max": 38
+       }
+      ],
+      "dominant_stage": 4,
+      "verdict": "Stage 4 dominates the critical path (66% of wall-clock); binding resource: Waiting on Python workers (UDF serialisation + interpreter).",
+      "projected_ms": 2444.0,
+      "findings": [
+       {
+        "kind": "python_udf",
+        "severity": "high",
+        "stage_id": null,
+        "title": "Python UDF in the physical plan: rows cross the JVM/Python boundary",
+        "evidence": [
+         "Plan operator: +- ArrowEvalPython (5)",
+         "Every row is serialised to a Python worker and back; the JVM thread shows up as 'other waiting', not CPU. The optimizer also cannot push filters or prune columns through the UDF."
+        ],
+        "fix": "Replace with built-in Spark SQL functions (F.when, F.regexp_*, F.expr). If logic truly needs Python, use a pandas UDF (Arrow, vectorised) instead of a row-at-a-time UDF."
+       }
+      ]
+     }
+    },
+    "native": {
+     "walls": [
+      1.2596479470003032,
+      1.4376346879998891,
+      1.3030526649999956
+     ],
+     "median_wall": 1.3030526649999956,
+     "checksum": "7f9c5fb77a84",
+     "diagnosis": {
+      "app_name": "python_udf:native",
+      "observed_slots": 4,
+      "target_slots": 16,
+      "window_ms": 1238.0,
+      "covered_ms": 761.0,
+      "gap_ms": 477.0,
+      "critical_path": [
+       4,
+       5
+      ],
+      "stages": [
+       {
+        "stage_id": 3,
+        "name": "compute  [parquet@NativeMethodAccessorImpl.j]",
+        "n_tasks": 1,
+        "duration_ms": 37.0,
+        "share_of_window": 0.02988691437802908,
+        "on_critical_path": false,
+        "buckets_ms": {
+         "cpu": 4.39464,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 18.0,
+         "other_wait": 2.60536
+        },
+        "bucket_share": {
+         "cpu": 0.1757856,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 0.72,
+         "other_wait": 0.1042144
+        },
+        "binding_resource": "Scheduling / per-task overhead bound",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 7,
+        "task_run_ms_max": 7
+       },
+       {
+        "stage_id": 4,
+        "name": "scan > hash-agg > shuffle-write  [collect@scenarios.py:110]",
+        "n_tasks": 6,
+        "duration_ms": 650.0,
+        "share_of_window": 0.5250403877221325,
+        "on_critical_path": true,
+        "buckets_ms": {
+         "cpu": 1160.823496,
+         "gc": 100.0,
+         "fetch_wait": 0.0,
+         "overhead": 124.0,
+         "other_wait": 967.176504
+        },
+        "bucket_share": {
+         "cpu": 0.49354740476190473,
+         "gc": 0.04251700680272109,
+         "fetch_wait": 0.0,
+         "overhead": 0.05272108843537415,
+         "other_wait": 0.4112145
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 39026604,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 1098,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 510.0,
+        "task_run_ms_max": 512
+       },
+       {
+        "stage_id": 5,
+        "name": "shuffle-read > hash-agg  [collect@scenarios.py:110]",
+        "n_tasks": 8,
+        "duration_ms": 74.0,
+        "share_of_window": 0.05977382875605816,
+        "on_critical_path": true,
+        "buckets_ms": {
+         "cpu": 93.85672000000001,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 102.0,
+         "other_wait": 65.14327999999999
+        },
+        "bucket_share": {
+         "cpu": 0.3596042911877395,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 0.39080459770114945,
+         "other_wait": 0.24959111111111107
+        },
+        "binding_resource": "Scheduling / per-task overhead bound",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 1098,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 20.0,
+        "task_run_ms_max": 31
+       }
+      ],
+      "dominant_stage": 4,
+      "verdict": "Stage 4 dominates the critical path (53% of wall-clock); binding resource: CPU-bound (JVM compute).",
+      "projected_ms": 1059.0,
+      "findings": []
+     }
+    }
+   },
+   "comparisons": {
+    "pandas_udf": {
+     "variant": "pandas_udf",
+     "wall_before_s": 2.259012413000164,
+     "wall_after_s": 2.820329197999854,
+     "speedup_measured": 0.8009747282701007,
+     "projected_before_s": 1.828,
+     "projected_after_s": 2.444,
+     "speedup_projected": 0.7479541734860884,
+     "result_identical": true,
+     "binding_before": "Waiting on Python workers (UDF serialisation + interpreter)",
+     "binding_after": "Waiting on Python workers (UDF serialisation + interpreter)",
+     "resolved": [],
+     "remaining": [
+      "python_udf"
+     ],
+     "introduced": [],
+     "verdict": "REGRESSION: 1.25x SLOWER measured. The fix costs more than the problem at this scale."
+    },
+    "native": {
+     "variant": "native",
+     "wall_before_s": 2.259012413000164,
+     "wall_after_s": 1.3030526649999956,
+     "speedup_measured": 1.733630937319154,
+     "projected_before_s": 1.828,
+     "projected_after_s": 1.059,
+     "speedup_projected": 1.7261567516525023,
+     "result_identical": true,
+     "binding_before": "Waiting on Python workers (UDF serialisation + interpreter)",
+     "binding_after": "CPU-bound (JVM compute)",
+     "resolved": [
+      "python_udf"
+     ],
+     "remaining": [],
+     "introduced": [],
+     "verdict": "CONFIRMED: 1.73x faster measured, result identical; the binding resource changed."
+    }
+   }
+  },
+  "join_strategy": {
+   "what": "Dimension join forced to sort-merge vs. broadcast hash join.",
+   "expected": [
+    "broadcast_candidate"
+   ],
+   "detected_on_bad": [
+    "broadcast_candidate"
+   ],
+   "diagnoser_hit": true,
+   "false_alarms_on_variants": {
+    "broadcast": []
+   },
+   "variants": {
+    "bad": {
+     "walls": [
+      2.8705759580006998,
+      2.8912768840000354,
+      2.8091351800003395
+     ],
+     "median_wall": 2.8705759580006998,
+     "checksum": "3d89ae4bf0ad",
+     "diagnosis": {
+      "app_name": "join_strategy:bad",
+      "observed_slots": 4,
+      "target_slots": 16,
+      "window_ms": 2796.0,
+      "covered_ms": 2134.0,
+      "gap_ms": 662.0,
+      "critical_path": [
+       5,
+       7,
+       8
+      ],
+      "stages": [
+       {
+        "stage_id": 3,
+        "name": "compute  [parquet@NativeMethodAccessorImpl.j]",
+        "n_tasks": 1,
+        "duration_ms": 37.0,
+        "share_of_window": 0.013233190271816882,
+        "on_critical_path": false,
+        "buckets_ms": {
+         "cpu": 3.747278,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 19.0,
+         "other_wait": 3.252722
+        },
+        "bucket_share": {
+         "cpu": 0.14412607692307694,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 0.7307692307692307,
+         "other_wait": 0.1251046923076923
+        },
+        "binding_resource": "Scheduling / per-task overhead bound",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 7,
+        "task_run_ms_max": 7
+       },
+       {
+        "stage_id": 4,
+        "name": "compute  [parquet@NativeMethodAccessorImpl.j]",
+        "n_tasks": 1,
+        "duration_ms": 43.0,
+        "share_of_window": 0.015379113018597998,
+        "on_critical_path": false,
+        "buckets_ms": {
+         "cpu": 3.391662,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 16.0,
+         "other_wait": 2.608338
+        },
+        "bucket_share": {
+         "cpu": 0.15416645454545455,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 0.7272727272727273,
+         "other_wait": 0.11856081818181817
+        },
+        "binding_resource": "Scheduling / per-task overhead bound",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 6,
+        "task_run_ms_max": 6
+       },
+       {
+        "stage_id": 5,
+        "name": "scan > shuffle-write  [collect@scenarios.py:110]",
+        "n_tasks": 6,
+        "duration_ms": 747.0,
+        "share_of_window": 0.26716738197424894,
+        "on_critical_path": true,
+        "buckets_ms": {
+         "cpu": 1665.1155360000002,
+         "gc": 82.0,
+         "fetch_wait": 0.0,
+         "overhead": 87.0,
+         "other_wait": 688.884464
+        },
+        "bucket_share": {
+         "cpu": 0.6599744494649228,
+         "gc": 0.03250099088386841,
+         "fetch_wait": 0.0,
+         "overhead": 0.034482758620689655,
+         "other_wait": 0.2730418010305192
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 32666388,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 59243278,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 480.0,
+        "task_run_ms_max": 517
+       },
+       {
+        "stage_id": 6,
+        "name": "scan > shuffle-write  [collect@scenarios.py:110]",
+        "n_tasks": 1,
+        "duration_ms": 617.0,
+        "share_of_window": 0.22067238912732476,
+        "on_critical_path": false,
+        "buckets_ms": {
+         "cpu": 78.356016,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 14.0,
+         "other_wait": 4.643984000000003
+        },
+        "bucket_share": {
+         "cpu": 0.8077939793814433,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 0.14432989690721648,
+         "other_wait": 0.047876123711340236
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 210888,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 682799,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 83,
+        "task_run_ms_max": 83
+       },
+       {
+        "stage_id": 7,
+        "name": "shuffle-read > sort > hash-agg > shuffle-write  [collect@scenarios.py:110]",
+        "n_tasks": 8,
+        "duration_ms": 1239.0,
+        "share_of_window": 0.44313304721030045,
+        "on_critical_path": true,
+        "buckets_ms": {
+         "cpu": 3798.0253350000003,
+         "gc": 144.0,
+         "fetch_wait": 0.0,
+         "overhead": 136.0,
+         "other_wait": 827.9746650000002
+        },
+        "bucket_share": {
+         "cpu": 0.7741592611088464,
+         "gc": 0.029351814105177332,
+         "fetch_wait": 0.0,
+         "overhead": 0.027721157766000815,
+         "other_wait": 0.1687677670199756
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 59926077,
+        "shuffle_write_bytes": 11989,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 595.0,
+        "task_run_ms_max": 904
+       },
+       {
+        "stage_id": 8,
+        "name": "shuffle-read > hash-agg  [collect@scenarios.py:110]",
+        "n_tasks": 8,
+        "duration_ms": 68.0,
+        "share_of_window": 0.024320457796852647,
+        "on_critical_path": true,
+        "buckets_ms": {
+         "cpu": 73.55333100000001,
+         "gc": 24.759290999999997,
+         "fetch_wait": 0.0,
+         "overhead": 83.0,
+         "other_wait": 44.687378
+        },
+        "bucket_share": {
+         "cpu": 0.32545721681415934,
+         "gc": 0.1095543849557522,
+         "fetch_wait": 0.0,
+         "overhead": 0.3672566371681416,
+         "other_wait": 0.19773176106194693
+        },
+        "binding_resource": "Scheduling / per-task overhead bound",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 11989,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 19.0,
+        "task_run_ms_max": 21
+       }
+      ],
+      "dominant_stage": 7,
+      "verdict": "Stage 7 dominates the critical path (44% of wall-clock); binding resource: CPU-bound (JVM compute).",
+      "projected_ms": 2145.0,
+      "findings": [
+       {
+        "kind": "broadcast_candidate",
+        "severity": "medium",
+        "stage_id": 5,
+        "title": "Sort-merge join with a small side that was shuffled",
+        "evidence": [
+         "Join input shuffle sizes: stage 6 wrote 666.8 KiB, stage 5 wrote 56.5 MiB (87x larger).",
+         "Both sides were hash-partitioned and sorted across the network although one side would fit in a broadcast (< 128.0 MiB)."
+        ],
+        "fix": "Broadcast the small side (F.broadcast(df) or raise spark.sql.autoBroadcastJoinThreshold). This removes the shuffle of the big side entirely, and with it any join-key skew."
+       }
+      ]
+     }
+    },
+    "broadcast": {
+     "walls": [
+      1.955099605000214,
+      1.8862769389997993,
+      1.9553769739995914
+     ],
+     "median_wall": 1.955099605000214,
+     "checksum": "3d89ae4bf0ad",
+     "diagnosis": {
+      "app_name": "join_strategy:broadcast",
+      "observed_slots": 4,
+      "target_slots": 16,
+      "window_ms": 1888.0,
+      "covered_ms": 1264.0,
+      "gap_ms": 624.0,
+      "critical_path": [
+       6,
+       7
+      ],
+      "stages": [
+       {
+        "stage_id": 3,
+        "name": "compute  [parquet@NativeMethodAccessorImpl.j]",
+        "n_tasks": 1,
+        "duration_ms": 52.0,
+        "share_of_window": 0.02754237288135593,
+        "on_critical_path": false,
+        "buckets_ms": {
+         "cpu": 4.412475,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 28.0,
+         "other_wait": 3.5875250000000003
+        },
+        "bucket_share": {
+         "cpu": 0.12256874999999999,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 0.7777777777777778,
+         "other_wait": 0.09965347222222223
+        },
+        "binding_resource": "Scheduling / per-task overhead bound",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 8,
+        "task_run_ms_max": 8
+       },
+       {
+        "stage_id": 4,
+        "name": "compute  [parquet@NativeMethodAccessorImpl.j]",
+        "n_tasks": 1,
+        "duration_ms": 41.0,
+        "share_of_window": 0.021716101694915255,
+        "on_critical_path": false,
+        "buckets_ms": {
+         "cpu": 3.523934,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 19.0,
+         "other_wait": 2.476066
+        },
+        "bucket_share": {
+         "cpu": 0.14095736,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 0.76,
+         "other_wait": 0.09904264
+        },
+        "binding_resource": "Scheduling / per-task overhead bound",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 6,
+        "task_run_ms_max": 6
+       },
+       {
+        "stage_id": 5,
+        "name": "scan  [collect@scenarios.py:110]",
+        "n_tasks": 1,
+        "duration_ms": 262.0,
+        "share_of_window": 0.13877118644067796,
+        "on_critical_path": false,
+        "buckets_ms": {
+         "cpu": 231.251307,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 12.0,
+         "other_wait": 3.748693000000003
+        },
+        "bucket_share": {
+         "cpu": 0.9362401093117408,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 0.048582995951417005,
+         "other_wait": 0.015176894736842117
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 210888,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 235,
+        "task_run_ms_max": 235
+       },
+       {
+        "stage_id": 6,
+        "name": "scan > hash-agg > shuffle-write  [collect@scenarios.py:110]",
+        "n_tasks": 6,
+        "duration_ms": 839.0,
+        "share_of_window": 0.444385593220339,
+        "on_critical_path": true,
+        "buckets_ms": {
+         "cpu": 2236.15738,
+         "gc": 104.0,
+         "fetch_wait": 0.0,
+         "overhead": 117.0,
+         "other_wait": 427.84262
+        },
+        "bucket_share": {
+         "cpu": 0.7750978786828423,
+         "gc": 0.03604852686308492,
+         "fetch_wait": 0.0,
+         "overhead": 0.04055459272097054,
+         "other_wait": 0.14829900173310226
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 32666388,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 8709,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 586.0,
+        "task_run_ms_max": 602
+       },
+       {
+        "stage_id": 7,
+        "name": "shuffle-read > hash-agg  [collect@scenarios.py:110]",
+        "n_tasks": 8,
+        "duration_ms": 70.0,
+        "share_of_window": 0.037076271186440676,
+        "on_critical_path": true,
+        "buckets_ms": {
+         "cpu": 91.23351600000001,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 90.0,
+         "other_wait": 64.766484
+        },
+        "bucket_share": {
+         "cpu": 0.3708679512195122,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 0.36585365853658536,
+         "other_wait": 0.2632783902439025
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 8709,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 19.0,
+        "task_run_ms_max": 31
+       }
+      ],
+      "dominant_stage": 6,
+      "verdict": "Stage 6 dominates the critical path (44% of wall-clock); binding resource: CPU-bound (JVM compute).",
+      "projected_ms": 1293.0,
+      "findings": []
+     }
+    }
+   },
+   "comparisons": {
+    "broadcast": {
+     "variant": "broadcast",
+     "wall_before_s": 2.8705759580006998,
+     "wall_after_s": 1.955099605000214,
+     "speedup_measured": 1.4682504925371234,
+     "projected_before_s": 2.145,
+     "projected_after_s": 1.293,
+     "speedup_projected": 1.6589327146171693,
+     "result_identical": true,
+     "binding_before": "CPU-bound (JVM compute)",
+     "binding_after": "CPU-bound (JVM compute)",
+     "resolved": [
+      "broadcast_candidate"
+     ],
+     "remaining": [],
+     "introduced": [],
+     "verdict": "CONFIRMED: 1.47x faster measured, result identical; the same resource still binds, with less work."
+    }
+   }
+  },
+  "spill": {
+   "what": "RED HERRING: real spill in a 2-partition sort, but the sort is not the critical path.",
+   "expected": [
+    "spill"
+   ],
+   "detected_on_bad": [
+    "spill"
+   ],
+   "diagnoser_hit": true,
+   "false_alarms_on_variants": {
+    "more_partitions": [
+     "spill"
+    ]
+   },
+   "variants": {
+    "bad": {
+     "walls": [
+      6.459339449000254,
+      6.279206003000581,
+      6.136820089999674
+     ],
+     "median_wall": 6.279206003000581,
+     "checksum": "acd533e45430",
+     "diagnosis": {
+      "app_name": "spill:bad",
+      "observed_slots": 4,
+      "target_slots": 16,
+      "window_ms": 6200.0,
+      "covered_ms": 5791.0,
+      "gap_ms": 409.0,
+      "critical_path": [
+       4,
+       5
+      ],
+      "stages": [
+       {
+        "stage_id": 3,
+        "name": "compute  [parquet@NativeMethodAccessorImpl.j]",
+        "n_tasks": 1,
+        "duration_ms": 48.0,
+        "share_of_window": 0.007741935483870968,
+        "on_critical_path": false,
+        "buckets_ms": {
+         "cpu": 3.786524,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 29.0,
+         "other_wait": 3.213476
+        },
+        "bucket_share": {
+         "cpu": 0.10518122222222222,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 0.8055555555555556,
+         "other_wait": 0.08926322222222222
+        },
+        "binding_resource": "Scheduling / per-task overhead bound",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 7,
+        "task_run_ms_max": 7
+       },
+       {
+        "stage_id": 4,
+        "name": "scan > shuffle-write  [save@NativeMethodAccessorImpl.java]",
+        "n_tasks": 6,
+        "duration_ms": 3011.0,
+        "share_of_window": 0.4856451612903226,
+        "on_critical_path": true,
+        "buckets_ms": {
+         "cpu": 8857.350485,
+         "gc": 264.0,
+         "fetch_wait": 0.0,
+         "overhead": 70.0,
+         "other_wait": 844.649515
+        },
+        "bucket_share": {
+         "cpu": 0.88255784027501,
+         "gc": 0.02630530091669988,
+         "fetch_wait": 0.0,
+         "overhead": 0.006974890394579514,
+         "other_wait": 0.08416196841371064
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 235715130,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 267325316,
+        "spill_disk_bytes": 222693362,
+        "spill_mem_bytes": 297793312,
+        "task_run_ms_median": 1983.5,
+        "task_run_ms_max": 2011
+       },
+       {
+        "stage_id": 5,
+        "name": "shuffle-read > sort  [save@NativeMethodAccessorImpl.java]",
+        "n_tasks": 2,
+        "duration_ms": 2604.0,
+        "share_of_window": 0.42,
+        "on_critical_path": true,
+        "buckets_ms": {
+         "cpu": 5028.175306,
+         "gc": 16.0,
+         "fetch_wait": 0.0,
+         "overhead": 28.0,
+         "other_wait": 65.82469399999991
+        },
+        "bucket_share": {
+         "cpu": 0.9786250108991825,
+         "gc": 0.003114052160373686,
+         "fetch_wait": 0.0,
+         "overhead": 0.005449591280653951,
+         "other_wait": 0.012811345659789784
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 267325316,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 276684820,
+        "spill_mem_bytes": 385873024,
+        "task_run_ms_median": 2555.0,
+        "task_run_ms_max": 2584
+       },
+       {
+        "stage_id": 6,
+        "name": "scan > hash-agg > shuffle-write  [collect@scenarios.py:193]",
+        "n_tasks": 6,
+        "duration_ms": 97.0,
+        "share_of_window": 0.01564516129032258,
+        "on_critical_path": false,
+        "buckets_ms": {
+         "cpu": 215.468514,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 50.0,
+         "other_wait": 56.531486
+        },
+        "bucket_share": {
+         "cpu": 0.6691568757763975,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 0.15527950310559005,
+         "other_wait": 0.17556362111801244
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 7998288,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 390,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 58.5,
+        "task_run_ms_max": 61
+       },
+       {
+        "stage_id": 7,
+        "name": "shuffle-read > hash-agg  [collect@scenarios.py:193]",
+        "n_tasks": 1,
+        "duration_ms": 31.0,
+        "share_of_window": 0.005,
+        "on_critical_path": false,
+        "buckets_ms": {
+         "cpu": 17.032473,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 7.0,
+         "other_wait": 0.9675270000000005
+        },
+        "bucket_share": {
+         "cpu": 0.68129892,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 0.28,
+         "other_wait": 0.03870108000000002
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 390,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 18,
+        "task_run_ms_max": 18
+       }
+      ],
+      "dominant_stage": 4,
+      "verdict": "Stage 4 dominates the critical path (49% of wall-clock); binding resource: CPU-bound (JVM compute).",
+      "projected_ms": 5030.0,
+      "findings": [
+       {
+        "kind": "spill",
+        "severity": "medium",
+        "stage_id": 5,
+        "title": "Spill: tasks did not fit their data in execution memory",
+        "evidence": [
+         "368.0 MiB spilled from memory (263.9 MiB on disk, compressed), in 2 of 2 tasks.",
+         "Spilled data is written, then read back and merged: extra disk I/O plus CPU."
+        ],
+        "fix": "Give each task less data (more partitions / fix skew), or more memory per task (fewer cores per executor, larger executor memory / spark.memory.fraction). Prefer the first: it is free."
+       },
+       {
+        "kind": "spill",
+        "severity": "medium",
+        "stage_id": 4,
+        "title": "Spill: tasks did not fit their data in execution memory",
+        "evidence": [
+         "284.0 MiB spilled from memory (212.4 MiB on disk, compressed), in 6 of 6 tasks.",
+         "Spilled data is written, then read back and merged: extra disk I/O plus CPU."
+        ],
+        "fix": "Give each task less data (more partitions / fix skew), or more memory per task (fewer cores per executor, larger executor memory / spark.memory.fraction). Prefer the first: it is free."
+       }
+      ]
+     }
+    },
+    "more_partitions": {
+     "walls": [
+      4.754592459000378,
+      5.145922429000166,
+      4.886978444999841
+     ],
+     "median_wall": 4.886978444999841,
+     "checksum": "acd533e45430",
+     "diagnosis": {
+      "app_name": "spill:more_partitions",
+      "observed_slots": 4,
+      "target_slots": 16,
+      "window_ms": 4827.0,
+      "covered_ms": 4395.0,
+      "gap_ms": 432.0,
+      "critical_path": [
+       4,
+       5
+      ],
+      "stages": [
+       {
+        "stage_id": 3,
+        "name": "compute  [parquet@NativeMethodAccessorImpl.j]",
+        "n_tasks": 1,
+        "duration_ms": 48.0,
+        "share_of_window": 0.009944064636420136,
+        "on_critical_path": false,
+        "buckets_ms": {
+         "cpu": 4.14706,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 26.0,
+         "other_wait": 2.8529400000000003
+        },
+        "bucket_share": {
+         "cpu": 0.12566848484848483,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 0.7878787878787878,
+         "other_wait": 0.08645272727272728
+        },
+        "binding_resource": "Scheduling / per-task overhead bound",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 7,
+        "task_run_ms_max": 7
+       },
+       {
+        "stage_id": 4,
+        "name": "scan > shuffle-write  [save@NativeMethodAccessorImpl.java]",
+        "n_tasks": 6,
+        "duration_ms": 2964.0,
+        "share_of_window": 0.6140459912989434,
+        "on_critical_path": true,
+        "buckets_ms": {
+         "cpu": 8632.656879,
+         "gc": 228.0,
+         "fetch_wait": 0.0,
+         "overhead": 87.0,
+         "other_wait": 845.3431209999999
+        },
+        "bucket_share": {
+         "cpu": 0.8815130071479629,
+         "gc": 0.023281936076789543,
+         "fetch_wait": 0.0,
+         "overhead": 0.00888389666088022,
+         "other_wait": 0.0863211601143674
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 235715130,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 267366897,
+        "spill_disk_bytes": 222693362,
+        "spill_mem_bytes": 297793312,
+        "task_run_ms_median": 1909.5,
+        "task_run_ms_max": 1937
+       },
+       {
+        "stage_id": 5,
+        "name": "shuffle-read > sort  [save@NativeMethodAccessorImpl.java]",
+        "n_tasks": 24,
+        "duration_ms": 1272.0,
+        "share_of_window": 0.26351771286513365,
+        "on_critical_path": true,
+        "buckets_ms": {
+         "cpu": 4624.154264,
+         "gc": 14.762531999999993,
+         "fetch_wait": 0.0,
+         "overhead": 254.0,
+         "other_wait": 188.08320400000008
+        },
+        "bucket_share": {
+         "cpu": 0.9100874363314307,
+         "gc": 0.002905438299547332,
+         "fetch_wait": 0.0,
+         "overhead": 0.049990159417437514,
+         "other_wait": 0.03701696595158435
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 267366897,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 161.0,
+        "task_run_ms_max": 396
+       },
+       {
+        "stage_id": 6,
+        "name": "scan > hash-agg > shuffle-write  [collect@scenarios.py:193]",
+        "n_tasks": 6,
+        "duration_ms": 83.0,
+        "share_of_window": 0.017194945100476488,
+        "on_critical_path": false,
+        "buckets_ms": {
+         "cpu": 183.01672100000002,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 40.0,
+         "other_wait": 51.983279
+        },
+        "bucket_share": {
+         "cpu": 0.6655153490909091,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 0.14545454545454545,
+         "other_wait": 0.18903010545454546
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 7998288,
+        "shuffle_read_bytes": 0,
+        "shuffle_write_bytes": 390,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 51.5,
+        "task_run_ms_max": 53
+       },
+       {
+        "stage_id": 7,
+        "name": "shuffle-read > hash-agg  [collect@scenarios.py:193]",
+        "n_tasks": 1,
+        "duration_ms": 28.0,
+        "share_of_window": 0.00580070437124508,
+        "on_critical_path": false,
+        "buckets_ms": {
+         "cpu": 15.563521,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 5.0,
+         "other_wait": 0.4364790000000003
+        },
+        "bucket_share": {
+         "cpu": 0.7411200476190476,
+         "gc": 0.0,
+         "fetch_wait": 0.0,
+         "overhead": 0.23809523809523808,
+         "other_wait": 0.0207847142857143
+        },
+        "binding_resource": "CPU-bound (JVM compute)",
+        "input_bytes": 0,
+        "shuffle_read_bytes": 390,
+        "shuffle_write_bytes": 0,
+        "spill_disk_bytes": 0,
+        "spill_mem_bytes": 0,
+        "task_run_ms_median": 16,
+        "task_run_ms_max": 16
+       }
+      ],
+      "dominant_stage": 4,
+      "verdict": "Stage 4 dominates the critical path (61% of wall-clock); binding resource: CPU-bound (JVM compute).",
+      "projected_ms": 2799.0,
+      "findings": [
+       {
+        "kind": "spill",
+        "severity": "medium",
+        "stage_id": 4,
+        "title": "Spill: tasks did not fit their data in execution memory",
+        "evidence": [
+         "284.0 MiB spilled from memory (212.4 MiB on disk, compressed), in 6 of 6 tasks.",
+         "Spilled data is written, then read back and merged: extra disk I/O plus CPU."
+        ],
+        "fix": "Give each task less data (more partitions / fix skew), or more memory per task (fewer cores per executor, larger executor memory / spark.memory.fraction). Prefer the first: it is free."
+       }
+      ]
+     }
+    }
+   },
+   "comparisons": {
+    "more_partitions": {
+     "variant": "more_partitions",
+     "wall_before_s": 6.279206003000581,
+     "wall_after_s": 4.886978444999841,
+     "speedup_measured": 1.2848851439942839,
+     "projected_before_s": 5.03,
+     "projected_after_s": 2.799,
+     "speedup_projected": 1.7970703822793854,
+     "result_identical": true,
+     "binding_before": "CPU-bound (JVM compute)",
+     "binding_after": "CPU-bound (JVM compute)",
+     "resolved": [],
+     "remaining": [
+      "spill"
+     ],
+     "introduced": [],
+     "verdict": "CONFIRMED: 1.28x faster measured, result identical; the same resource still binds, with less work."
+    }
+   }
+  }
+ }
+}
