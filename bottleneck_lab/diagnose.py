@@ -520,7 +520,7 @@ def diagnose(app: AppLog, target_slots: int = 16,
 def render_markdown(d: Diagnosis) -> str:
     out: List[str] = []
     out.append(f"### Diagnosis: `{d.app_name}`")
-    out.append(f"*Observed slots: {d.observed_slots}. Projections use {d.target_slots} slots.*\n")
+    out.append(f"*Observed slots: {d.observed_slots}.*\n")
     out.append("**Step 0 - wall-clock window**  ")
     out.append(f"{d.window_ms / 1000:.1f} s total; {d.covered_ms / 1000:.1f} s inside stages, "
                f"{d.gap_ms / 1000:.1f} s ({(d.gap_ms / d.window_ms if d.window_ms else 0):.0%}) "

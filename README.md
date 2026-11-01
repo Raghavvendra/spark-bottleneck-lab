@@ -75,6 +75,25 @@ It under-predicted every variant **and ranked salting as better than the baselin
 | 3 | **Why** | skew, tiny tasks, small files, spill, GC, Python UDF, broadcast candidate; each prints its evidence |
 | 4 | **Fix, re-measure** | `compare.py`: identical result? clock moved (measured)? diagnosed cause gone? Verdicts: CONFIRMED / NEUTRAL / REGRESSION / REJECTED |
 
+## Case study: a job outside the lab
+
+To check the diagnoser on code I did not build the lab around, I ran it on a small job written for this test (`examples/orders_job_udf.py`): it joins 3M orders to 100k customers, buckets order amounts with a Python UDF, and groups by city, segment and tier. This is **not a production job**, and I wrote it, so it is not a blind test.
+
+| | Before (Python UDF) | After (native `F.when`) |
+|---|---|---|
+| Diagnoser finding | Python UDF in the plan (HIGH) | no rule fired |
+| Binding resource, dominant stage | waiting on Python workers (62% other-wait, 33% CPU) | CPU-bound (78% CPU) |
+| Stage that held the UDF | 1.73 s | 0.64 s |
+| Wall-clock window | 3.7 s | 2.8 s |
+| Output | | identical (checked with pandas, `equals` returned True) |
+
+Each timing is a single run of a roughly 3 s job, and runs of that length drift by 10% or more, so read this as "about 1.3x, direction confirmed", not a precise figure. The event logs are in `results/eventlogs/orders_job__*.log`.
+
+## Known issues
+
+- In the first report on the case-study job, only one stage was marked as being on the critical path, although later stages read its shuffle output. I have not investigated the cause. My hypothesis (untested) is that parent links do not connect across the several jobs that adaptive execution creates. It did not change this diagnosis, because that stage dominated anyway.
+- Stage labels end with a truncated call site (for example `parquet@NativeMethodAccessorImpl.j`) that is not informative.
+
 ## Limitations
 
 - **Local mode only.** No real network shuffle, so "shuffle fetch wait" is ~0; local shuffle reads appear under "other wait". Not tested on a multi-node cluster or Databricks.
@@ -82,7 +101,6 @@ It under-predicted every variant **and ranked salting as better than the baselin
 - **Heuristic thresholds** in `diagnose.py` are my judgement, tuned on these six workloads. Only validated on Spark 3.5.3 logs.
 - **Synthetic data** and self-graded detection (see above).
 - AQE skew thresholds are scaled down to the demo data size (documented in `scenarios.py`).
-- This was built with AI assistance (Claude), then run, measured, and validated on my own hardware.
 
 ## Gotchas hit while building this
 
